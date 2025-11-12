@@ -7,7 +7,8 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
 # 🔑 Gemini API anahtarını environment variable ile al
-genai.configure(api_key=os.environ.get("AIzaSyDj2yuMlc_6IGE4oyajq9zwZ8QZLhUFDiQ"))
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+
 
 @app.route('/')
 def index():
