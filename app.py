@@ -6,8 +6,8 @@ import google.generativeai as genai
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
-# 🔑 Gemini API anahtarını gir
-genai.configure(api_key="AIzaSyDj2yuMlc_6IGE4oyajq9zwZ8QZLhUFDiQ")
+# 🔑 Gemini API anahtarını environment variable ile al
+genai.configure(api_key=os.environ.get("AIzaSyDj2yuMlc_6IGE4oyajq9zwZ8QZLhUFDiQ"))
 
 @app.route('/')
 def index():
@@ -25,7 +25,6 @@ def analyze():
     filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     file.save(filepath)
 
-    # 🤖 Yapay zekaya JSON biçiminde kısa ve düzenli yanıt isteği
     prompt = """
     Fotoğraftaki tabakta bulunan yemekleri tanı.
     Her biri için yalnızca adını ve tahmini kalorisini belirt.
@@ -45,13 +44,16 @@ def analyze():
         genai.upload_file(filepath)
     ])
 
-    result_text = response.text.strip()
-    result_text = result_text.replace("```json", "").replace("```", "")
+    result_text = response.text.strip().replace("```json", "").replace("```", "")
 
     try:
         data = json.loads(result_text)
         foods = data.get("foods", [])
-        total_calories = sum([int(item.get("calories", 0)) for item in foods if isinstance(item.get("calories"), (int, float))])
+        total_calories = sum([
+            int(item.get("calories", 0)) 
+            for item in foods 
+            if isinstance(item.get("calories"), (int, float))
+        ])
     except Exception:
         foods = [{"name": "Belirlenemedi", "calories": "?"}]
         total_calories = 0
@@ -60,4 +62,5 @@ def analyze():
 
 if __name__ == "__main__":
     os.makedirs("static/uploads", exist_ok=True)
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
