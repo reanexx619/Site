@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🍽️ AI Kalori Analizi — Codeland</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page">
+    <header class="site-header">
+      <div class="brand">
+        <span class="logo">🍴</span>
+        <div>
+          <h1>AI Tabak Analizi</h1>
+          <p class="tag">Hızlı. Kısa. Güvenilir.</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="upload-area">
+        <form action="/analyze" method="post" enctype="multipart/form-data" class="upload-box">
+          <label for="fileInput" class="file-label">
+            <input type="file" name="image" id="fileInput" accept="image/*" required>
+            <div class="file-instructions">
+              <strong>Görsel seç</strong>
+              <span>Fotoğrafı yükle, AI öğeleri ayırsın</span>
+            </div>
+          </label>
+          <button type="submit" class="btn">🔍 Analiz Et</button>
+        </form>
+      </section>
+
+      {% if image_path %}
+      <section class="result-section">
+        <div class="left">
+          <img src="{{ image_path }}" alt="Yüklenen Görsel" class="food-img">
+        </div>
+
+        <div class="right">
+          <h2>📋 Tahmini Menü</h2>
+          <div class="menu-grid">
+            {% for food in foods %}
+              <div class="menu-card">
+                <h3>{{ food.name }}</h3>
+                <p class="cal">{{ food.calories }} <span>kcal</span></p>
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="total-card">
+            <div class="total-left">
+              <h4>🔥 Toplam</h4>
+              <p class="total-val">{{ total }} kcal</p>
+            </div>
+            <div class="total-right">
+              <button class="btn secondary" onclick="window.scrollTo({top:0, behavior:'smooth'})">Yeniden</button>
+            </div>
+          </div>
+        </div>
+      </section>
+      {% endif %}
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <footer class="site-footer">
+  <div class="footer-inner">
+    <p>© Codeland tarafından yapılmıştır</p>
+  </div>
+</footer>
+
+  
+  </div>
+</body>
+</html>
